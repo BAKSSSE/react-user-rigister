@@ -7,7 +7,7 @@ mongoose.connect('mongodb+srv://bakssse:Qkrwns1313!@boilerplate.cm1ktua.mongodb.
 }).then(()=> console.log('MongoDB Connected...'))
   .catch(err => console.log(err))
 
-
+// 1
 
 app.get('/', (req, res) => {
   res.send('Hello World!')
