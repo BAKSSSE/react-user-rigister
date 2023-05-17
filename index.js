@@ -5,13 +5,14 @@ const app = express()
 const port = 5000
 const bodyParser = require('body-parser')
 
+const config = require('./config/key')
 const { User } = require('./models/User')
 
 // application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({extended: true})) 
 // application/json
 app.use(bodyParser.json())
-mongoose.connect('mongodb+srv://bakssse:' + process.env.MONGOOSE_PASSWORD + '@boilerplate.cm1ktua.mongodb.net/?retryWrites=true&w=majority', {
+mongoose.connect(config.mongoURL, {
     // 6 이하
     // useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true, useFindAndModify: false
 }).then(()=> console.log('MongoDB Connected Ok'))
