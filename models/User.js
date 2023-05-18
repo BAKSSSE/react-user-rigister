@@ -3,7 +3,6 @@ const bcrypt = require('bcrypt')
 const jwt= require('jsonwebtoken')
 const saltRounds = 10;
 
-// const someOtherPlaintextPassword = 'not_bacon';
 const UserSchema = mongoose.Schema({
     name: {
         type: String,
@@ -71,6 +70,17 @@ UserSchema.methods.generateToken = async function(cb) {
         return cb(err)
     })
 
+}
+UserSchema.statics.findByToken = async function(token, cb) {
+    var user = this;
+
+    var decoded = jwt.verify(token, process.env.JWT_SECRET_TOKEN)
+
+    await user.findOne({"_id": decoded, "token": token}).then((user) => {
+        cb(null, user)
+    }).catch((err) => {
+        return cb(err)
+    })
 }
 
 const User = mongoose.model('User', UserSchema);

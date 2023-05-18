@@ -7,6 +7,8 @@ const bodyParser = require('body-parser')
 const cookieParser = require('cookie-parser')
 
 const config = require('./config/key')
+const { auth } = require('./middleware/auth')
+
 const { User } = require('./models/User')
 
 // application/x-www-form-urlencoded
@@ -28,7 +30,7 @@ app.get('/', (req, res) => {
 })
 
 
-app.post('/register', async (req, res) => {
+app.post('/api/users/register', async (req, res) => {
     const user = new User(req.body)
     await user.save().then(() => {
             return res.status(200).json({
@@ -39,7 +41,7 @@ app.post('/register', async (req, res) => {
     })
 })
 
-app.post('/login', async (req, res) => {
+app.post('/api/users/login', async (req, res) => {
   // const User = new User(req.body)
   const user = await User.findOne({ email: req.body.email })
 
@@ -59,9 +61,36 @@ app.post('/login', async (req, res) => {
         res.cookie("x_auth", user.token)
         .status(200)
         .json({ success: true, userId: user._id })
-
       })
   })
+
+})
+
+app.get('/api/users/auth', auth, (req, res) => {
+
+  res.status(200).json({ 
+    _id: req.user._id,
+    isAdmin: req.user.role === 0 ? false : true,
+    isAuth: true,
+    email: req.user.email,
+    name: req.user.name,
+    lastname: req.user.lastname,
+    role: req.user.role,
+    image: req.user.image
+  })
+
+})
+
+app.get('/api/users/logout', auth, async (req,res) => {
+
+  await User.findOneAndUpdate({ _id: req.user._id }, {token: ""})
+    .then((user) => {
+      return res.status(200).json({ success: true })
+    })
+    .catch((err) => {
+      return res.json({ success: false, message: err})
+      
+    })
 
 })
 
