@@ -64,7 +64,7 @@ UserSchema.methods.generateToken = async function(cb) {
     let token = jwt.sign(user._id.toHexString(), process.env.JWT_SECRET_TOKEN)
 
     user.token = token 
-
+//
     await user.save(user).then(function() {
         return cb(null, user)
     }).catch(function(err) {
