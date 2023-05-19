@@ -29,6 +29,9 @@ app.get('/', (req, res) => {
   res.send('Hello World!!')
 })
 
+app.get('/api/hello', (req,res)=>{
+  return res.send("hi")
+})
 
 app.post('/api/users/register', async (req, res) => {
     const user = new User(req.body)
